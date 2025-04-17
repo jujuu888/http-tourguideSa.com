@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المرشد السياحي - اكتشف السعودية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f5f0;
+            color: #333;
+        }
+        header {
+            background-color: #c97b63;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search-bar input {
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #c97b63;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #c97b63;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .city, .island, .forest, .site {
+            background-color: #f1e0d6;
+            border: 1px solid #c97b63;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        footer {
+            background-color: #c97b63;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        a {
+            color: #c97b63;
+            text-decoration: none;
+        }
+        .popular-cities, .popular-islands, .forests, .historical-sites {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .popular-cities .city, .popular-islands .island, .forests .forest, .historical-sites .site {
+            flex: 1 1 calc(30% - 20px);
+            max-width: calc(30% - 20px);
+        }
+        .city img, .island img, .forest img, .site img {
+            width: 100%;
+            border-radius: 8px;
+            height: auto;
+        }
+        .map-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script>
+        function initMap() {
+            const locations = [
+                { name: "الرياض", lat: 24.7136, lng: 46.6753, events: "موسم الرياض، مهرجان التسوق", description: "عاصمة المملكة ومركز للأعمال والفعاليات الكبرى." },
+                { name: "جدة", lat: 21.2854, lng: 39.2376, events: "موسم جدة، مهرجان البحر الأحمر", description: "مدينة ساحلية تجمع بين التاريخ والحديث." },
+                { name: "مكة المكرمة", lat: 21.4225, lng: 39.8262, events: "أداء مناسك الحج، مهرجان الفطر", description: "أقدس مدينة في العالم الإسلامي." },
+                { name: "المدينة المنورة", lat: 24.4667, lng: 39.6000, events: "مهرجان المدينة المنورة الثقافي", description: "مهد الإسلام وأحد أقدس الأماكن في العالم." },
+                { name: "الطائف", lat: 21.2854, lng: 40.5051, events: "مهرجان الورد الطائفي، فعاليات سياحية في الجبال", description: "مدينة جبلية باردة وأجواء صيفية رائعة." },
+                { name: "الدمام", lat: 26.4207, lng: 49.9777, events: "مهرجان الشرقية للتراث والفنون", description: "مدينة ساحلية وتعد مركزًا تجاريًا هامًا." },
+                { name: "العلا", lat: 26.9225, lng: 37.9781, events: "مهرجان العلا الثقافي، حفلات الموسيقى", description: "مدينة تاريخية غنية بالآثار النبطية." },
+                { name: "نيوم", lat: 26.8121, lng: 35.0387, events: "فعاليات تكنولوجيا المستقبل والابتكار", description: "مدينة ذكية تعد من أكبر المشاريع في العالم." },
+                { name: "ذا لاين", lat: 26.2033, lng: 38.2425, events: "فعاليات خاصة بمشروع ذا لاين", description: "مدينة مستقبلية تستهدف تغيير شكل الحياة urbanistic." },
+                { name: "نجران", lat: 17.5772, lng: 44.1360, events: "مهرجان نجران الثقافي، مهرجان الرماية التقليدية", description: "مدينة تقع في الجنوب وتحتوي على آثار تاريخية مثل الأخدود." },
+                { name: "أبها", lat: 18.2170, lng: 42.5050, events: "مهرجان أبها السياحي، فعاليات الصيف", description: "مدينة جبلية باردة وموقعها في جنوب المملكة." }
+            ];
+
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 5,
+                center: { lat: 23.8859, lng: 45.0792 }
+            });
+
+            locations.forEach(location => {
+                new google.maps.Marker({
+                    position: { lat: location.lat, lng: location.lng },
+                    map: map,
+                    title: location.name
+                });
+            });
+        }
+
+        function searchCity() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            let suggestions = [];
+
+            const cities = [
+                { name: "الرياض", description: "مدينة حديثة، تحتوي على فعاليات كبيرة مثل موسم الرياض." },
+                { name: "جدة", description: "مدينة ساحلية، تتميز بمهرجان البحر الأحمر." },
+                { name: "العلا", description: "موقع تاريخي، يحتوي على آثار نبطية رائعة." }
+            ];
+
+            cities.forEach(city => {
+                if (city.description.toLowerCase().includes(query)) {
+                    suggestions.push(city.name);
+                }
+            });
+
+            if (suggestions.length > 0) {
+                alert("المدن المقترحة: " + suggestions.join(", "));
+            } else {
+                alert("لم يتم العثور على أي مدن تطابق وصفك.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>المرشد السياحي - اكتشف السعودية</h1>
+    </header>
+    <main>
+        <div class="search-bar">
+            <input id="searchInput" type="text" placeholder="اكتب وصف المدينة التي تبحث عنها...">
+            <button onclick="searchCity()">بحث</button>
+        </div>
+
+        <h2>مدن سياحية شهيرة</h2>
+        <div class="popular-cities">
+            <div class="city">
+                <img src="https://example.com/riyadh.jpg" alt="الرياض">
+                <h3>الرياض</h3>
+                <p>فعاليات: موسم الرياض، مهرجان التسوق</p>
+                <p>وصف: عاصمة المملكة ومركز للأعمال والفعاليات الكبرى.</p>
+            </div>
+            <div class="city">
+                <img src="https://example.com/jeddah.jpg" alt="جدة">
+                <h3>جدة</h3>
+                <p>فعاليات: موسم جدة، مهرجان البحر الأحمر</p>
+                <p>وصف: مدينة ساحلية تجمع بين التاريخ والحديث.</p>
+            </div>
+            <!-- Add more cities as needed -->
+        </div>
+
+        <div class="map-container" id="map" style="height: 500px;"></div>
+
+    </main>
+    <footer>
+        <p>للتواصل معنا عبر البريد: <a href="mailto:desert.tour2025@gmail.com">desert.tour2025@gmail.com</a></p>
+    </footer>
+</body>
+</html>
